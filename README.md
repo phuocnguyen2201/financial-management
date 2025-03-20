@@ -1,4 +1,4 @@
-# Financial mgt
+# Financial Management
 
 ## Overview
 

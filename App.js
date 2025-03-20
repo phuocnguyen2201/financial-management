@@ -1,20 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer, createStaticNavigation } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Scan from './src/screens/Scan';
+import Report from './src/screens/Report';
+import Extract from './src/screens/Extract';
+import styles from './src/styles/Global-Style';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const Tabs = createBottomTabNavigator({
+  screens: {
+    Home: Scan,
+    Report: Report,
+    Extract: Extract,
   },
 });
+const Navigation = createStaticNavigation(Tabs);
+export default function App() {
+  return (
+    <Navigation />
+  );
+}

@@ -1,13 +1,10 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Pressable } from 'react-native';
 import styles from '../styles/Global-Style';
-import { DataTable, List } from 'react-native-paper';
 import { ref, onValue, set } from 'firebase/database';
 import { db } from '../services/firebase_config';
 import { use, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
+import { formatDate } from '../services/utility';
 
 export default function Extract() {
   const [data, setData] = useState([{}]);
@@ -21,45 +18,46 @@ export default function Extract() {
   };
 
   const retrieveData = () => {
-
+    if(!Id) return;
     onValue(ref(db, '/receipts/'+Id), (snapshot) => {
         const data = snapshot.val();
         if(data) {
           setData(Object.values(data));
-          
         }
     });
   }
 
   useEffect(() => {
     getUserID();
-    retrieveData();
 
   }, []);
+
+  useEffect(() => {
+    if(Id)
+      retrieveData();
+  }, [Id]);
+
   return (
-    <View>
+    <View style={styles.container}>
       <Text>This is Extracting screen!</Text>
-      {data && data.length > 0 ?  
-      <List.Section title="Accordions">
-        {data.map((item) => {
-          return (
-            <List.Accordion
-              title={item.merchant+" - "+item.total_amount+" "+item.currency}
-              left={props => <List.Icon {...props} icon="folder" />}
-              expanded={expanded}
-              onPress={handlePress}>
-                {item.items && item.items.length > 0 ? (
-                  item.items.map((element, index) => (
-                    <List.Item key={index} title={element.name +" - " + element.price} />
-                  ))
-                ) : (
-                  <List.Item title="No items available" />
-                )}
-            </List.Accordion>
-          )
-        })}
-    </List.Section> : <Text>There are no receipts</Text>}
-     
+      {data!=null&& data && data.length > 0 ?  
+       
+        data.map((item, index) => {
+            return (
+            <View key={`row-${index}`} style={{ marginVertical: 10 }}>
+              <Pressable key={`item-${item}`} style={styles.pressable} onPress={handlePress}>
+                <Text style={styles.text}>{item.merchant}</Text>
+
+                <View style={styles.rightSide}>                
+                  <Text style={styles.amountText}>{item.total_amount +' '+item.currency}</Text>
+                  <Text style={styles.dateText}>{formatDate(item.date)}</Text>
+                </View>
+
+              </Pressable>
+            </View>
+            );
+        })
+       : <Text>There are no receipts</Text>}
     </View>
   );
 }

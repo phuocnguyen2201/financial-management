@@ -34,7 +34,8 @@ export default function Scan() {
   //Generate a unique user id for each devices.
   const verifyUniqueUser = async () => {
     const user = await AsyncStorage.getItem('user');
-    if(!user){
+    
+    if(!user || user === null || user === undefined){ 
       const newUser = await AsyncStorage.setItem('user', uuid.v4());
       setId(newUser);
     }

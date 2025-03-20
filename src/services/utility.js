@@ -11,4 +11,7 @@ const formatDate = (dateString) => {
     // Return formatted date in dd/MM/yyyy hh:mm format
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
-export { formatDate };  
+  const getUserID = async () => {
+    return await AsyncStorage.getItem('user');
+  };
+export { formatDate, getUserID };  

@@ -10,8 +10,9 @@ import styles from './src/styles/Global-Style';
 const Tabs = createBottomTabNavigator({
   screens: {
     Home: Scan,
-    Report: Report,
     Extract: Extract,
+    Report: Report,
+
   },
 });
 const Navigation = createStaticNavigation(Tabs);

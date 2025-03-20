@@ -1,4 +1,6 @@
-const formatDate = (dateString) => {
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+  const formatDate = (dateString) => {
     const date = new Date(dateString); // Parse the ISO string into a Date object
   
     // Get individual components of the date
@@ -12,6 +14,15 @@ const formatDate = (dateString) => {
     return `${day}/${month}/${year} ${hours}:${minutes}`;
   };
   const getUserID = async () => {
-    return await AsyncStorage.getItem('user');
+
+    const user = await AsyncStorage.getItem('user');
+    const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+    if(!user || user === null || user === undefined || guidRegex.test(user) === false){ 
+      const newUser = await AsyncStorage.setItem('user', uuid.v4());
+      user = newUser;
+    }
+    return await user;
   };
+
 export { formatDate, getUserID };  

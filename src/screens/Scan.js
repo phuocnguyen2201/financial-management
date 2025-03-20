@@ -6,8 +6,8 @@ import styles from '../styles/Global-Style';
 import uploadImage from '../services/connection';
 import { ref, set } from 'firebase/database';
 import { db } from '../services/firebase_config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import uuid from 'react-native-uuid';
+import { getUserID } from '../services/utility';
 
 export default function Scan() {
   const [photoBase64, setPhotoBase64] = useState('');
@@ -33,14 +33,7 @@ export default function Scan() {
 
   //Generate a unique user id for each devices.
   const verifyUniqueUser = async () => {
-    const user = await AsyncStorage.getItem('user');
-    
-    if(!user || user === null || user === undefined){ 
-      const newUser = await AsyncStorage.setItem('user', uuid.v4());
-      setId(newUser);
-    }
-    else
-      setId(user);
+      setId(getUserID());
   }
 
   const camera = useRef(null);

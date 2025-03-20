@@ -3,22 +3,17 @@ import styles from '../styles/Global-Style';
 import { ref, onValue, set, get } from 'firebase/database';
 import { db } from '../services/firebase_config';
 import { use, useEffect, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { formatDate, getUserID } from '../services/utility';
 
 export default function Extract() {
+  
   const [data, setData] = useState([{}]);
   const [Id, setId] = useState('');
   const [expanded, setExpanded] = useState(true);
 
   const handlePress = () => setExpanded(!expanded);
-  
-  const retrieveUser = () => {
-    setId(getUserID);
-  };
 
   const retrieveData = () => {
-    if(!Id) return;
     onValue(ref(db, '/receipts/'+Id), (snapshot) => {
         const data = snapshot.val();
         if(data) {
@@ -26,10 +21,13 @@ export default function Extract() {
         }
     });
   }
+  const fetchUserId = async () => {
+    const userId = await getUserID();
+    setId(userId);
+  };
 
   useEffect(() => {
-    retrieveUser();
-
+    fetchUserId();
   }, []);
 
   useEffect(() => {
@@ -40,8 +38,8 @@ export default function Extract() {
   return (
     <View style={styles.container}>
       <Text>This is Extracting screen!</Text>
-      {data != null && data && data.length > 0 ?  
-       
+      {data != null && data && data.length > 1 ?  
+        
         data.map((item, index) => {
             return (
             <View key={`row-${index}`} style={{ marginVertical: 10 }}>
@@ -57,7 +55,12 @@ export default function Extract() {
             </View>
             );
         })
-       : <Text style={styles.text}>Wow~ such empty</Text>}
+       : <View style={styles.container}>
+          <Pressable style={styles.pressable}>
+            <Text style={styles.text}>Wow ~ such empty</Text>
+          </Pressable>
+          </View>
+          }
     </View>
   );
 }

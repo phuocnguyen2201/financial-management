@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     justifyContent: 'space-around',
     marginBottom: 10,
+    padding: 10,
   },
   button:{
     backgroundColor: colors.grey,
@@ -74,6 +75,13 @@ const styles = StyleSheet.create({
       fontWeight: "bold",
       color: "#000", // Dark color for total amount
       marginTop: 5, // Space between date and amount
+    },
+    chartContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#fff",
+      padding: 20,
     },
 });
 

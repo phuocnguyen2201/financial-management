@@ -50,7 +50,7 @@ export default function Extract() {
 
                 <View style={styles.rightSide}>                
                   <Text style={styles.amountText}>{item.total_amount +' '+item.currency}</Text>
-                  <Text style={styles.dateText}>{formatDate(item.date)}</Text>
+                  <Text style={styles.dateText}>{formatDate('dd/MM/yyyy hh:mm',item.date)}</Text>
                 </View>
 
               </Pressable>

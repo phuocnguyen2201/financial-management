@@ -12,7 +12,6 @@ import { getUserID } from '../services/utility';
 export default function Scan() {
   const [photoBase64, setPhotoBase64] = useState('');
   const [permission, requestPermission] = useCameraPermissions();
-  const [data, setData] = useState({});
   const [id, setId] = useState('');
 
   const openCamera = () => {

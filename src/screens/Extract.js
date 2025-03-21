@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import styles from '../styles/Global-Style';
-import { ref, onValue, set, get } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { db } from '../services/firebase_config';
 import { use, useEffect, useState } from 'react';
 import { formatDate, getUserID } from '../services/utility';
@@ -19,6 +19,8 @@ export default function Extract() {
         if(data) {
           setData(Object.values(data));
         }
+        else
+          setData(null);
     });
   }
   const fetchUserId = async () => {
@@ -38,7 +40,7 @@ export default function Extract() {
   return (
     <View style={styles.container}>
       <Text>This is Extracting screen!</Text>
-      {data != null && data && data.length > 1 ?  
+      {data != null && data && data.length > 0 ?  
         
         data.map((item, index) => {
             return (

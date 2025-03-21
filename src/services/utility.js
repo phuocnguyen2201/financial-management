@@ -24,5 +24,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
     }
     return await user;
   };
+  const randomColor = () => {
+    const list = ['#72CCFF', '#02B2AF', 'orange', '#ffb300', '#ff9100', '#ff6c00'];
+    return list[Math.floor(Math.random() * list.length)];
+  };
+  const fixString = (obj) => {
+    if (typeof obj === "object" && obj !== null) {
+      return Object.values(obj).join(""); // Convert character object to string
+    }
+    return obj;
+  };
 
-export { formatDate, getUserID };  
+export { formatDate, getUserID, randomColor, fixString };  

@@ -38,7 +38,7 @@ export default function Extract() {
   }, [Id]);
 
   return (
-    <View style={styles.container}>
+    <View>
       <Text>This is Extracting screen!</Text>
       {data != null && data && data.length > 0 ?  
         

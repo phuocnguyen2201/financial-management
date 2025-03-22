@@ -17,6 +17,7 @@ const fontSizes = {
 const colors = {
   primary: '#f7287b',
   secondary: '#c717fc',
+  lightgreen: '#6fcaba',
   accent: '#f7287b',
   white: '#fff',
   black: '#000',
@@ -24,6 +25,7 @@ const colors = {
   lightGrey: '#eee',
   darkGrey: '#444',
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -83,6 +85,42 @@ const styles = StyleSheet.create({
       backgroundColor: "#fff",
       padding: 20,
     },
+    
+    scanButton: {
+      backgroundColor: colors.lightgreen,
+      padding: spacing.md,
+      fontSize: fontSizes.lg,
+      color: colors.white,
+      borderRadius: 10,
+      margin: spacing.md,
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: colors.lightgreen,
+    },
+    scanText:{
+      fontSize: fontSizes.xl,
+      fontWeight: 'bold',
+      textAlign: 'left',
+    },
+    scanPressable:({ pressed }) => [
+      styles.scanButton,
+      { backgroundColor: pressed ? colors.lightGrey : colors.lightgreen},
+    ],
+    flashButton: {
+      padding: spacing.md,
+      fontSize: fontSizes.lg,
+      color: colors.white,
+      borderRadius: 60,
+      margin: spacing.md,
+      alignItems: 'center',
+      borderWidth: 2,
+      borderColor: colors.lightgreen,
+    },
+    flashPressable:({ pressed }) => [
+      styles.flashButton,
+      { backgroundColor: pressed ? colors.lightGrey : colors.white},
+    ],
 });
+
 
 export default styles;

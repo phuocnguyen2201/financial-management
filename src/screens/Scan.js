@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { use, useRef, useState, useEffect } from "react";
-import { Button, Text, View, Image } from 'react-native';
+import { Button, Text, View, Image, Pressable, ActivityIndicator } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import styles from '../styles/Global-Style';
 import uploadImage from '../services/connection';
@@ -8,11 +8,17 @@ import { ref, set } from 'firebase/database';
 import { db } from '../services/firebase_config';
 import uuid from 'react-native-uuid';
 import { getUserID } from '../services/utility';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Scan() {
   const [photoBase64, setPhotoBase64] = useState('');
   const [permission, requestPermission] = useCameraPermissions();
+  const [flash, setFlash] = useState('off');
+  const [flashIcon, setFlashIcon] = useState('flash-off');
   const [id, setId] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [failure, setFailure] = useState(false);
 
   const openCamera = () => {
     
@@ -32,11 +38,12 @@ export default function Scan() {
 
   //Generate a unique user id for each devices.
   const verifyUniqueUser = async () => {
-      setId(getUserID());
+      setId(await getUserID());
   }
 
   const camera = useRef(null);
   const takePhoto = async () => {
+    setLoading(true);
     if(camera) {
       const photo = await camera.current.takePictureAsync({base64: true});
 
@@ -46,8 +53,7 @@ export default function Scan() {
         .then(response => response.json())
         .then(data => {
           if(data.result === 'success'){
-            const components    = data.data.components;
-            console.log(components);
+            console.log(data)
 
             const total_amount  = components.financial.total_amount;
             const currency      = components.financial.currency;
@@ -59,39 +65,54 @@ export default function Scan() {
                   price: item.amount_each,
             }));
 
-            set(ref(db, '/receipts/'+id+'/'+uuid.v4()), {
-                total_amount: total_amount,
-                currency: currency,
-                date: date,
-                merchant: merchant,
-                items: items
-            });
+            if (  components.financial.total_amount !== null && 
+                  components.financial.merchant.brand_name !== null) {
 
+                    set(ref(db, '/receipts/'+id+'/'+uuid.v4()), {
+                        total_amount: total_amount,
+                        currency: currency,
+                        date: date,
+                        merchant: merchant,
+                        items: items
+                    });
+                    setSuccess(true);
+            }
+            else
+              setFailure(true);
           }
         }
         )
-        .catch(error => console.error("Error from the uploadImage function: "+error));
+        .catch(error => console.error("Error from the uploadImage function: "+error))
+        .finally(() => setLoading(false));
 
     }
   }
-
+  const toggleFlash = () => {
+    flash === 'off' ? setFlash('on') : setFlash('off');
+    flashIcon === 'flash-off' ? setFlashIcon('flash') : setFlashIcon('flash-off');
+  }
   useEffect(() => {
     verifyUniqueUser();
+    openCamera();
   }, []);
 
   return (
     <View style={{ flex: 1 }}>
-      <CameraView style={{ flex: 1, minWidth: "100%" }} ref={camera} />
-      <Button title="Take Photo" onPress={takePhoto} />
-      <View style={{ flex: 1 }}>
-        { photoBase64 ? (
-          <>
-            <Image style={{ flex: 1 }} source={{ uri: `data:image/jpg;base64,${photoBase64}` }} />
-          </>
-        ) : (
-          <Text>No photo taken yet.</Text>
-        )}      
+      {success ? <Text>Receipt uploaded successfully!</Text>:<></>}
+      {failure ? <Text>Failed to upload the receipt!</Text>:<></>}
+      <CameraView flash={flash} style={{ flex: 3, borderRadius:15, margin:5 }} ref={camera} />
+      
+      {loading ? <ActivityIndicator animating={loading} size="large" color="#0000ff" />:<></>}
+      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
+        <View style={{flex:1}}>
+          <Pressable style={styles.flashPressable} onPress={toggleFlash}><Ionicons name={flashIcon} size={28}/></Pressable>
+          </View>
+
+        <View style={{flex:3}}>
+          <Pressable style={styles.scanPressable} onPress={takePhoto}><Text style={styles.scanText}>Scan</Text></Pressable>
+          </View>
       </View>
     </View>
-  );  
+  );
+
 }

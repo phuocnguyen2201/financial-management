@@ -64,6 +64,11 @@ const styles = StyleSheet.create({
       color: colors.black,
       textAlign: 'left',
     },
+    textmd:{
+      fontSize: fontSizes.md,
+      color: colors.black,
+      textAlign: 'left',
+    },
 
     rightSide: {
       alignItems: "flex-end", // Align text to the right
@@ -120,6 +125,29 @@ const styles = StyleSheet.create({
       styles.flashButton,
       { backgroundColor: pressed ? colors.lightGrey : colors.white},
     ],
+    modalBackground: {
+      flex: 1,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    modalContainer: {
+      backgroundColor: '#333',
+      padding: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+    },
+    loadingText: {
+      color: '#fff',
+      marginTop: 10,
+      fontSize: 16,
+    },
+    titleContainer:{
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: 10,
+    }
 });
 
 

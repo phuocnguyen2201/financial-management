@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { use, useRef, useState, useEffect } from "react";
-import { Button, Text, View, Image, Pressable, ActivityIndicator } from 'react-native';
+import { Button, Text, View, Image, Pressable, Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import styles from '../styles/Global-Style';
 import uploadImage from '../services/connection';
@@ -9,16 +9,16 @@ import { db } from '../services/firebase_config';
 import uuid from 'react-native-uuid';
 import { getUserID } from '../services/utility';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import LoadingModal from '../components/LoadingModal';
+import Toast from 'react-native-toast-message';
 
 export default function Scan() {
-  const [photoBase64, setPhotoBase64] = useState('');
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState('off');
   const [flashIcon, setFlashIcon] = useState('flash-off');
   const [id, setId] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [failure, setFailure] = useState(false);
+  const [success, setSuccess] = useState(null);
 
   const openCamera = () => {
     
@@ -47,13 +47,11 @@ export default function Scan() {
     if(camera) {
       const photo = await camera.current.takePictureAsync({base64: true});
 
-      setPhotoBase64(photo.base64);
-
       uploadImage(photo.base64)
         .then(response => response.json())
         .then(data => {
           if(data.result === 'success'){
-            console.log(data)
+            const components    = data.data.components;
 
             const total_amount  = components.financial.total_amount;
             const currency      = components.financial.currency;
@@ -78,31 +76,63 @@ export default function Scan() {
                     setSuccess(true);
             }
             else
-              setFailure(true);
+              setSuccess(false);
           }
         }
         )
         .catch(error => console.error("Error from the uploadImage function: "+error))
-        .finally(() => setLoading(false));
+        .finally(() => 
+        {
+          setLoading(false)
+        }
+      );
 
     }
   }
+
   const toggleFlash = () => {
     flash === 'off' ? setFlash('on') : setFlash('off');
     flashIcon === 'flash-off' ? setFlashIcon('flash') : setFlashIcon('flash-off');
+    console.log(flash);
+    
   }
+
+  const notificationMessage = () => {
+    if (success === true) {
+      Toast.show({
+        type: 'success',
+        text1: 'Success!',
+        text2: 'Operation completed successfully. 🎉',
+      });
+    } else if (success === false) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error!',
+        text2: 'Something went wrong. ❌',
+      });
+    }
+  };
+  
   useEffect(() => {
     verifyUniqueUser();
     openCamera();
   }, []);
 
+  useEffect(() => {
+    notificationMessage();
+  }, [success]);
+
   return (
     <View style={{ flex: 1 }}>
-      {success ? <Text>Receipt uploaded successfully!</Text>:<></>}
-      {failure ? <Text>Failed to upload the receipt!</Text>:<></>}
+      <View style={styles.titleContainer}>
+        <Text style={styles.textmd}>Adjust the document in the frame</Text>
+      </View>
+
       <CameraView flash={flash} style={{ flex: 3, borderRadius:15, margin:5 }} ref={camera} />
       
-      {loading ? <ActivityIndicator animating={loading} size="large" color="#0000ff" />:<></>}
+      <Toast />
+      <LoadingModal visible={loading}/>
+
       <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly', alignItems: 'center' }}>
         <View style={{flex:1}}>
           <Pressable style={styles.flashPressable} onPress={toggleFlash}><Ionicons name={flashIcon} size={28}/></Pressable>
@@ -111,6 +141,7 @@ export default function Scan() {
         <View style={{flex:3}}>
           <Pressable style={styles.scanPressable} onPress={takePhoto}><Text style={styles.scanText}>Scan</Text></Pressable>
           </View>
+          
       </View>
     </View>
   );

@@ -3,16 +3,13 @@ import React, { use, useRef, useState, useEffect } from "react";
 import { Button, Text, View, Image, Pressable, Alert } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import styles from '../styles/Global-Style';
-import uploadImage from '../services/connection';
-import { ref, set } from 'firebase/database';
-import { db } from '../services/firebase_config';
-import uuid from 'react-native-uuid';
-import { getUserID } from '../services/utility';
+import { uploadImage, categoryItem} from '../services/connection';
+import { formatDate, getUserID } from '../services/utility';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import LoadingModal from '../components/LoadingModal';
 import Toast from 'react-native-toast-message';
 
-export default function Scan() {
+export default function Scan({ navigation}) {
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState('off');
   const [flashIcon, setFlashIcon] = useState('flash-off');
@@ -46,55 +43,63 @@ export default function Scan() {
     setLoading(true);
     if(camera) {
       const photo = await camera.current.takePictureAsync({base64: true});
-
+      
+     
       uploadImage(photo.base64)
         .then(response => response.json())
         .then(data => {
           if(data.result === 'success'){
             const components    = data.data.components;
 
-            const total_amount  = components.financial.total_amount;
+            const total_amount  = components.financial?.total_amount??0;
             const currency      = components.financial.currency;
-            const date          = components.financial.document_date;
-            const merchant      = components.financial.merchant.brand_name;
+            const date          = components.financial?.document_date??formatDate("",new Date("dd/MM/yyyy hh:mm"));
+            const merchant      = components.financial.merchant?.brand_name??'Unknown';
             const items         = components.line_items.line_item_sections[0].items.map((item) => ({
                   name: item.title,
                   quantity: item.quantity,
                   price: item.amount_each,
             }));
 
-            if (  components.financial.total_amount !== null && 
-                  components.financial.merchant.brand_name !== null) {
-
-                    set(ref(db, '/receipts/'+id+'/'+uuid.v4()), {
-                        total_amount: total_amount,
-                        currency: currency,
-                        date: date,
-                        merchant: merchant,
-                        items: items
-                    });
-                    setSuccess(true);
-            }
-            else
-              setSuccess(false);
+            categoryItemAndUpload(photo, { total_amount: total_amount, currency: currency, date: date, merchant: merchant, items: items });
           }
         }
         )
         .catch(error => console.error("Error from the uploadImage function: "+error))
-        .finally(() => 
-        {
-          setLoading(false)
-        }
-      );
 
     }
+  }
+
+  const categoryItemAndUpload = async (photo, object) => {
+
+    categoryItem(photo.base64)
+    .then(response => response.json())
+    .then(data => {
+      if(data.result === 'success'){
+        const category = data.data.components.prompt_builder;
+
+        if (object != null && object.total_amount !== null && 
+          object.merchant !== null) {
+            object.category = category?.category??'Others';
+            setSuccess(true);
+        }
+    else
+      setSuccess(false);
+        
+      }
+    })
+    .catch(error => console.error("Error from the categoryItem function: "+error))
+    .finally(() => 
+      {
+        setLoading(false)
+        //Navigate to the Extract screen and data will be passed as a parameter.
+        navigation.navigate('Extract' ,{object});
+      });
   }
 
   const toggleFlash = () => {
     flash === 'off' ? setFlash('on') : setFlash('off');
     flashIcon === 'flash-off' ? setFlashIcon('flash') : setFlashIcon('flash-off');
-    console.log(flash);
-    
   }
 
   const notificationMessage = () => {

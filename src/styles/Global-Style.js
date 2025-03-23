@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Pressable } from 'react-native';
+import { Table } from 'react-native-table-component';
 
 const spacing = {
   xs: 5,
@@ -48,10 +49,12 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 5,
     borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.grey,
     },
     pressable:({ pressed }) => [
         styles.button,
-        { backgroundColor: pressed ? colors.darkGrey : colors.grey },
+        { backgroundColor: pressed ? colors.white : colors.grey },
     ],
     viewPosition:{
       alignItems:'flex-end', 
@@ -147,7 +150,27 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       padding: 10,
+    },
+    itemText: {
+      fontSize: fontSizes.md,
+      color: "#000",
+      marginTop: 5,
+      fontStyle: 'italic',
+    },
+    itemContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-evenly',
+      alignItems: 'flex-end',
+      paddingVertical: 5,
+      paddingHorizontal: 10,
+    },
+    head: { height: 40, backgroundColor: '#f1f8ff', fontWeight: '700' },
+    text: { margin: 6, textAlign: 'right' },
+    table:{
+      borderWidth: 0, borderColor: '#c8e1ff',
+      margin: 10,
     }
+    
 });
 
 

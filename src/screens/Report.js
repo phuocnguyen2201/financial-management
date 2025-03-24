@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Pressable, OptionButton  } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, Dimensions  } from 'react-native';
 import PieChart from 'react-native-pie-chart'
 import styles from '../styles/Global-Style';
 import { ref, onValue, set } from 'firebase/database';
@@ -14,9 +14,10 @@ export default function Report() {
   const [Id, setId] = useState('');
   const [Series, setSeries] = useState([]);
   const [Percentage, setPercentage] = useState([]);
+  const [Category, setCategory] = useState({labels:[],datasets:[{}]});
   const [CommitsData, setCommitsData] = useState([{}]);
   const [selectedValue, setSelectedValue] = useState('30');
-  const widthAndHeight = 250;
+  const widthAndHeight = 180;
 
   const fetchUserId = async () => {
     const userId = await getUserID();
@@ -43,6 +44,26 @@ export default function Report() {
     decimalPlaces: 0, // No decimals in values
   };
 
+  const graphStyle = {
+    marginVertical: 8,
+    borderRadius: 16,
+  };
+  
+  const width = Dimensions.get('window').width;
+  const chartWidth = width - 20;
+
+  const barChartConfig = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientFromOpacity: 0.9,
+    backgroundGradientTo: "#08130D",
+    backgroundGradientToOpacity: 0.8,
+    color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // Green bars
+    labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White labels
+    strokeWidth: 2, // Line thickness
+    barPercentage: 0.5, // Adjust bar width
+    useShadowColorFromDataset: false, // Optional
+  };
+
   const dataByMerchant = () => {
 
     if(data) {
@@ -63,52 +84,52 @@ export default function Report() {
     // Reset the series, prevent duplicate data
     setPercentage([]);
 
-    data.forEach((item) => {
-      total += item.total_amount;
-    });
+    if(data){
 
-    data.forEach((item) => {
-    
-      const percentage = ((item.total_amount / total) * 100).toFixed(1) + '%';
-      setPercentage(prevPercentage => [
-        ...prevPercentage, 
-        { value: item.total_amount, color: randomColor(), label: { text: percentage, fontSize: 22, fontStyle: 'italic', outline: 'white' } }
-      ]);
-    });
-  };
-
-  const dataByCategory = () => {
-    let total = 0;
-    // Reset the series, prevent duplicate data
-    setSeries([]);
-
-    data.forEach((item) => {
-      total += item.total_amount;
-    });
-
-    data.forEach((item) => {
-    
-      const percentage = ((item.total_amount / total) * 100).toFixed(1) + '%';
-      setSeries(prevSeries => [
-        ...prevSeries, 
-        { value: item.total_amount, color: randomColor(), label: { text: percentage, fontSize: 22, fontStyle: 'italic', outline: 'white' } }
-      ]);
-    });
+      data.forEach((item) => {
+        total += item.total_amount;
+      });
+  
+      data.forEach((item) => {
+      
+        const percentage = ((item.total_amount / total) * 100).toFixed(1) + '%';
+        setPercentage(prevPercentage => [
+          ...prevPercentage, 
+          { value: item.total_amount, color: randomColor(), label: { text: percentage, fontSize: 22, fontStyle: 'italic', outline: 'white' } }
+        ]);
+      });
+    }
+   
   };
 
   const dataByPurchaseDate = () => {
 
     setCommitsData([]);
 
-    data.forEach((item) => {
-      setCommitsData(prevCommitsData => [
-        ...prevCommitsData, 
-        { date: formatDate('yyyy-MM-dd', item.date), count: Object.keys(item.items).length }
-      ]);
+    if(data)
+    {
+      data.forEach((item) => {
+        setCommitsData(prevCommitsData => [
+          ...prevCommitsData, 
+          { date: formatDate('yyyy-MM-dd', item.date), count: Object.keys(item.items).length }
+        ]);
 
-    });
+      });
+    }
   };
 
+  const dataByCategory = () => {
+    if(data){
+
+      const formattedData = {
+        labels: data.map(item => item.category),
+        datasets: [{ data: data.map(item => item.total_amount) }]
+      };
+      console.log(formattedData);
+
+      setCategory(formattedData);
+    }
+  }
 
   useEffect(() => {
     fetchUserId();
@@ -126,6 +147,7 @@ export default function Report() {
       dataByPercentage();
       dataByMerchant();
       dataByPurchaseDate();
+      dataByCategory();
     }
   }
   , [data]);
@@ -133,6 +155,8 @@ export default function Report() {
   useEffect(() => {
 
   }, [selectedValue]);
+
+
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -157,8 +181,22 @@ export default function Report() {
           </Pressable>
         </View>
       }
+      <View style={{margin:10}}>
+        <Text>By Categories</Text>
+        <BarChart
+          style={graphStyle}
+          data={Category}
+          width={chartWidth}
+          height={280}
+          yAxisLabel="$"
+          chartConfig={barChartConfig}
+          verticalLabelRotation={0}
+        />
+      </View>
+
+
       <View style={styles.container}>
-        <Text style={styles.title}>Purchase dates</Text>
+        <Text style={{marginTop:10}}>Purchase dates</Text>
         <RNPickerSelect
           onValueChange={(value) => setSelectedValue(value)}
           items={[
@@ -169,7 +207,7 @@ export default function Report() {
         />
       </View>
       
-      
+
       <ContributionGraph
         values={CommitsData}
         endDate={new Date().toISOString().split('T')[0]}

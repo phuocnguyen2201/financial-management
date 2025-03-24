@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View, Pressable } from 'react-native';
+import { Text, View, Pressable, ScrollView } from 'react-native';
 import styles from '../styles/Global-Style';
 import { ref, onValue } from 'firebase/database';
 import { db } from '../services/firebase_config';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatDate, getUserID } from '../services/utility';
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
+import { Table, Row, Rows } from 'react-native-reanimated-table';
 
 export default function Extract() {
   
@@ -39,7 +39,7 @@ export default function Extract() {
   }, [Id]);
 
   return (
-    <View>
+    <ScrollView>
       {data != null && data && data.length > 0 ?  
         
         data.map((item, index) => {
@@ -58,12 +58,12 @@ export default function Extract() {
              {  expanded == `row-${index}` && 
                   <View>
                     <Table style={styles.table}>
-                      <Row data={tableHead} style={styles.head} textStyle={styles.text}/>
+                      <Row data={tableHead} style={styles.head} textStyle={{ textAlign: 'right', margin: 6 }}/>
                       <Rows data={item.items.map((item, index) => [
                         item.name,
                         item.quantity,
                         item.price
-                      ])} textStyle={styles.text}/>
+                      ])} textStyle={{ textAlign: 'right', margin: 6 }}/>
                     </Table>
 
                   </View>
@@ -77,6 +77,6 @@ export default function Extract() {
           </Pressable>
           </View>
           }
-    </View>
+    </ScrollView>
   );
 }

@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Pressable } from 'react-native';
-import { Table } from 'react-native-table-component';
+
+import { StyleSheet } from 'react-native';
 
 const spacing = {
   xs: 5,
@@ -165,7 +164,7 @@ const styles = StyleSheet.create({
       paddingHorizontal: 10,
     },
     head: { height: 40, backgroundColor: '#f1f8ff', fontWeight: '700' },
-    text: { margin: 6, textAlign: 'right' },
+    textRow: { textAlign: 'right', margin: 6 },
     table:{
       borderWidth: 0, borderColor: '#c8e1ff',
       margin: 10,

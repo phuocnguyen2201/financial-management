@@ -8,6 +8,9 @@ import { formatDate, getUserID } from '../services/utility';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import LoadingModal from '../components/LoadingModal';
 import Toast from 'react-native-toast-message';
+import { set, ref } from 'firebase/database';
+import { db } from '../services/firebase_config';
+import uuid from 'react-native-uuid';
 
 export default function Scan({ navigation}) {
   const [permission, requestPermission] = useCameraPermissions();
@@ -81,6 +84,8 @@ export default function Scan({ navigation}) {
         if (object != null && object.total_amount !== null && 
           object.merchant !== null) {
             object.category = category?.category??'Others';
+
+            set(ref(db, '/receipts/'+id+'/'+uuid.v4()), object);
             setSuccess(true);
         }
     else
@@ -92,8 +97,6 @@ export default function Scan({ navigation}) {
     .finally(() => 
       {
         setLoading(false)
-        //Navigate to the Extract screen and data will be passed as a parameter.
-        navigation.navigate('Extract' ,{object});
       });
   }
 

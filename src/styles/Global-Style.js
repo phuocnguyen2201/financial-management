@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     text:{
-      fontSize: fontSizes.xl,
+      fontSize: fontSizes.md,
       fontWeight: 'bold',
       color: colors.black,
       textAlign: 'left',

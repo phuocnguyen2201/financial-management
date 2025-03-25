@@ -10,11 +10,11 @@ import RNPickerSelect from "react-native-picker-select";
 
 export default function Report() {
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState(null);
   const [Id, setId] = useState('');
   const [Series, setSeries] = useState([]);
   const [Percentage, setPercentage] = useState([]);
-  const [Category, setCategory] = useState({labels:[],datasets:[{}]});
+  const [Category, setCategory] = useState({labels:[],datasets:[{ data: [] }]});
   const [CommitsData, setCommitsData] = useState([{}]);
   const [selectedValue, setSelectedValue] = useState('30');
   const widthAndHeight = 180;
@@ -87,7 +87,7 @@ export default function Report() {
     if(data){
 
       data.forEach((item) => {
-        total += item.total_amount;
+        total += item?.total_amount?? 0;
       });
   
       data.forEach((item) => {
@@ -104,29 +104,29 @@ export default function Report() {
 
   const dataByPurchaseDate = () => {
 
-    setCommitsData([]);
-
     if(data)
     {
+      setCommitsData([]);
       data.forEach((item) => {
         setCommitsData(prevCommitsData => [
           ...prevCommitsData, 
-          { date: formatDate('yyyy-MM-dd', item.date), count: Object.keys(item.items).length }
+          { date: formatDate('yyyy-MM-dd', item?.date?? new Date()), count: Object.keys(item.items)?.length?? 0 }
         ]);
-
       });
     }
+    else
+      setCommitsData(null);
   };
 
   const dataByCategory = () => {
-    if(data){
 
+    setCategory({labels:[],datasets:[{ data: [] }]});
+    if(data)
+    {
       const formattedData = {
         labels: data.map(item => item.category),
-        datasets: [{ data: data.map(item => item.total_amount) }]
+        datasets: [{ data: data.map(item => item?.total_amount?? 0) }]
       };
-      console.log(formattedData);
-
       setCategory(formattedData);
     }
   }
@@ -155,9 +155,14 @@ export default function Report() {
   useEffect(() => {
 
   }, [selectedValue]);
-
-
-
+  const testdata = {
+    labels: ["January", "February", "March", "April", "May", "June"],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43]
+      }
+    ]
+  };
   return (
     <ScrollView style={{ flex: 1 }}>
       { 
@@ -181,41 +186,48 @@ export default function Report() {
           </Pressable>
         </View>
       }
+      {data != null ? 
       <View style={{margin:10}}>
         <Text>By Categories</Text>
-        <BarChart
-          style={graphStyle}
-          data={Category}
-          width={chartWidth}
-          height={280}
-          yAxisLabel="$"
-          chartConfig={barChartConfig}
-          verticalLabelRotation={0}
-        />
-      </View>
+          <View>
+            <BarChart
+              style={graphStyle}
+              data={Category}
+              width={chartWidth}
+              height={280}
+              yAxisLabel="$"
+              chartConfig={barChartConfig}
+            />
+          </View>
+
+          <View style={styles.container}>
+            <Text style={{marginTop:10}}>Purchase dates</Text>
+            <RNPickerSelect
+              onValueChange={(value) => setSelectedValue(value)}
+              items={[
+                { label: "1 month", value: "30" },
+                { label: "3 months", value: "105" },
+              ]}
+              placeholder={{ label: "Select a period...", value: null }}
+            />
+          </View>
+
+          <View>      
+            <ContributionGraph
+              values={CommitsData}
+              endDate={new Date().toISOString().split('T')[0]}
+              numDays={selectedValue}
+              width={'100%'}
+              height={220}
+              chartConfig={chartConfig}
+            />
+          </View>
+
+      </View>: 
+      <View>
+      </View>}
 
 
-      <View style={styles.container}>
-        <Text style={{marginTop:10}}>Purchase dates</Text>
-        <RNPickerSelect
-          onValueChange={(value) => setSelectedValue(value)}
-          items={[
-            { label: "1 month", value: "30" },
-            { label: "3 months", value: "105" },
-          ]}
-          placeholder={{ label: "Select a period...", value: null }}
-        />
-      </View>
-      
-
-      <ContributionGraph
-        values={CommitsData}
-        endDate={new Date().toISOString().split('T')[0]}
-        numDays={selectedValue}
-        width={'100%'}
-        height={220}
-        chartConfig={chartConfig}
-      />
     </ScrollView>
       
   );

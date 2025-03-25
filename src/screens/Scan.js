@@ -11,6 +11,8 @@ import Toast from 'react-native-toast-message';
 import { set, ref } from 'firebase/database';
 import { db } from '../services/firebase_config';
 import uuid from 'react-native-uuid';
+import { Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Scan({ navigation}) {
   const [permission, requestPermission] = useCameraPermissions();
@@ -20,6 +22,11 @@ export default function Scan({ navigation}) {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
 
+  const width = Dimensions.get('window').width;
+  const screenWidth = width - 10;
+  const height = Dimensions.get('window').height;
+  const screenHeight = height - 10;
+  
   const openCamera = () => {
     
     if(!permission)
@@ -82,7 +89,7 @@ export default function Scan({ navigation}) {
         const category = data.data.components.prompt_builder;
 
         if (object != null && object.total_amount !== null && 
-          object.merchant !== null) {
+          object.merchant !== null && object.merchant !== 'Unknown') {
             object.category = category?.category??'Others';
 
             set(ref(db, '/receipts/'+id+'/'+uuid.v4()), object);
@@ -135,8 +142,10 @@ export default function Scan({ navigation}) {
       <View style={styles.titleContainer}>
         <Text style={styles.textmd}>Adjust the document in the frame</Text>
       </View>
-
-      <CameraView flash={flash} style={{ flex: 3, borderRadius:15, margin:5 }} ref={camera} />
+      <SafeAreaView style={{flex:4}}>
+        <CameraView flash={flash} style={{ flex: 1, borderRadius:15, margin:5, height: '100%', minWidth: '98%' }} ref={camera} />
+      </SafeAreaView>
+      
       
       <Toast />
       <LoadingModal visible={loading}/>
@@ -153,5 +162,4 @@ export default function Scan({ navigation}) {
       </View>
     </View>
   );
-
 }

@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import uuid from 'react-native-uuid';
 
   const formatDate = (dateFormat, dateString) => {
     const date = new Date(dateString); // Parse the ISO string into a Date object
@@ -20,15 +21,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
   };
   
   const getUserID = async () => {
+    try
+    {
+      const user = await AsyncStorage.getItem('user');
+      const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
-    const user = await AsyncStorage.getItem('user');
-    const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-
-    if(!user || user === null || user === undefined || guidRegex.test(user) === false){ 
-      const newUser = await AsyncStorage.setItem('user', uuid.v4());
-      user = newUser;
-    }
-    return await user;
+      if(!user || user === null || user === undefined || guidRegex.test(user) === false){ 
+        const newUser = await AsyncStorage.setItem('user', uuid.v4());
+        user = newUser;
+      }
+      return await user;
+    } catch (error) {
+      console.error('Error from getUserID: ', error)}
   };
 
   const randomColor = () => {

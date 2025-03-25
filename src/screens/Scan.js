@@ -23,9 +23,7 @@ export default function Scan({ navigation}) {
   const [success, setSuccess] = useState(null);
 
   const width = Dimensions.get('window').width;
-  const screenWidth = width - 10;
-  const height = Dimensions.get('window').height;
-  const screenHeight = height - 10;
+  const screenWidth = width - 16;
   
   const openCamera = () => {
     
@@ -143,7 +141,7 @@ export default function Scan({ navigation}) {
         <Text style={styles.textmd}>Adjust the document in the frame</Text>
       </View>
       <SafeAreaView style={{flex:4}}>
-        <CameraView flash={flash} style={{ flex: 1, borderRadius:15, margin:5, height: '100%', minWidth: '98%' }} ref={camera} />
+        <CameraView flash={flash} style={{ flex: 1, borderRadius:15, margin:5, height: '100%', minWidth: screenWidth }} ref={camera} ></CameraView>
       </SafeAreaView>
       
       

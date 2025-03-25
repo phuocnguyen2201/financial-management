@@ -15,6 +15,7 @@ export default function Extract() {
   const handlePress = (index) => setExpanded(expanded === index ? null : index);
   const tableHead = ['Name', 'Quantity', 'Price'];
   const retrieveData = () => {
+    console.log('retrieving data');
     onValue(ref(db, '/receipts/'+Id), (snapshot) => {
         const rawData = snapshot.val();
         if(rawData) {
@@ -23,6 +24,7 @@ export default function Extract() {
         else
           setData(null);
     });
+    console.log('Done retrieving data');
   }
   const fetchUserId = async () => {
     const userId = await getUserID();
@@ -40,7 +42,7 @@ export default function Extract() {
 
   return (
     <ScrollView>
-      {data != null && data && data.length > 0 ?  
+      {data && data.length > 0 ?  
         
         data.map((item, index) => {
             return (
@@ -55,7 +57,7 @@ export default function Extract() {
                 </View>
 
               </Pressable>
-             {  expanded == `row-${index}` && 
+             {  expanded == `row-${index}` &&
                   <View>
                     <Table style={styles.table}>
                       <Row data={tableHead} style={styles.head} textStyle={{ textAlign: 'right', margin: 6 }}/>

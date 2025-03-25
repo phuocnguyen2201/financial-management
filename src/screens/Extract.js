@@ -15,7 +15,7 @@ export default function Extract() {
   const handlePress = (index) => setExpanded(expanded === index ? null : index);
   const tableHead = ['Name', 'Quantity', 'Price'];
   const retrieveData = () => {
-    console.log('retrieving data');
+
     onValue(ref(db, '/receipts/'+Id), (snapshot) => {
         const rawData = snapshot.val();
         if(rawData) {
@@ -24,7 +24,6 @@ export default function Extract() {
         else
           setData(null);
     });
-    console.log('Done retrieving data');
   }
   const fetchUserId = async () => {
     const userId = await getUserID();

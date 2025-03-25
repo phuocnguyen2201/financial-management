@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { use, useRef, useState, useEffect } from "react";
 import { Button, Text, View, Image, Pressable, Alert } from 'react-native';
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import styles from '../styles/Global-Style';
 import { uploadImage, categoryItem} from '../services/connection';
 import { formatDate, getUserID } from '../services/utility';
@@ -15,6 +15,7 @@ import { Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Scan({ navigation}) {
+
   const [permission, requestPermission] = useCameraPermissions();
   const [flash, setFlash] = useState('off');
   const [flashIcon, setFlashIcon] = useState('flash-off');
@@ -141,7 +142,7 @@ export default function Scan({ navigation}) {
         <Text style={styles.textmd}>Adjust the document in the frame</Text>
       </View>
       <SafeAreaView style={{flex:4}}>
-        <CameraView flash={flash} style={{ flex: 1, borderRadius:15, margin:5, height: '100%', minWidth: screenWidth }} ref={camera} ></CameraView>
+        <CameraView flash={flash}  facing='back' style={{ flex: 1, borderRadius:15, margin:5 }} ref={camera} ></CameraView>
       </SafeAreaView>
       
       

@@ -68,14 +68,20 @@ export default function Report() {
 
     if(data) {
       // Reset the series, prevent duplicate data
-      setSeries([]);
+      //setSeries([]);
 
-      data.forEach((item) => {
-        setSeries(prevSeries => [
-          ...prevSeries, 
-          { value: item.total_amount, color: randomColor(), label: { text: fixString(item.merchant), fontSize: 22, fontStyle: 'italic', outline: 'white' } }
-        ]);
-      });
+      const summary = data.reduce((acc, item) => {
+        const amount = item?.total_amount ?? 0; // Use `total_amount` if available, fallback to 0
+        acc[item.merchant] = (acc[item.merchant] || 0) + amount;
+        return acc;
+      }, {});
+
+      const summarizedArray = Object.entries(summary).map(([merchant, total]) => ({
+        value: total,
+        color: randomColor(),
+        label: { text: fixString(merchant), fontSize: 13, fontStyle: 'italic', outline: 'white' }
+      }));
+      setSeries(summarizedArray);
     }
   };
 
@@ -86,18 +92,30 @@ export default function Report() {
 
     if(data){
 
-      data.forEach((item) => {
-        total += item?.total_amount?? 0;
-      });
-  
-      data.forEach((item) => {
+      const summary = data.reduce((acc, item) => {
+        const amount = item?.total_amount ?? 0; // Use `total_amount` if available, fallback to 0
+        acc[item.merchant] = (acc[item.merchant] || 0) + amount;
+        return acc;
+      }, {});
+
+      const totalAmount = Object.values(summary).reduce((sum, num) => sum + num, 0);
+
+      const summarizedArray = Object.entries(summary).map(([merchant, total]) => {
+        const percentage = ((total / totalAmount) * 100).toFixed(1);
       
-        const percentage = ((item.total_amount / total) * 100).toFixed(1) + '%';
-        setPercentage(prevPercentage => [
-          ...prevPercentage, 
-          { value: item.total_amount, color: randomColor(), label: { text: percentage, fontSize: 22, fontStyle: 'italic', outline: 'white' } }
-        ]);
+        return {
+          value: total,
+          color: randomColor(),
+          label: { 
+            text: percentage+" %",
+            fontSize: 13, 
+            fontStyle: 'italic', 
+            outline: 'white' 
+          }
+        };
       });
+
+      setPercentage(summarizedArray);
     }
    
   };
@@ -108,10 +126,11 @@ export default function Report() {
     {
       setCommitsData([]);
       data.forEach((item) => {
-        setCommitsData(prevCommitsData => [
-          ...prevCommitsData, 
-          { date: formatDate('yyyy-MM-dd', item?.date?? new Date()), count: Object.keys(item.items)?.length?? 0 }
-        ]);
+        if(item?.items)
+          setCommitsData(prevCommitsData => [
+            ...prevCommitsData, 
+            { date: formatDate('yyyy-MM-dd', item?.date?? new Date()), count: Object.keys(item.items)?.length?? 0 }
+          ]);
       });
     }
     else
@@ -123,9 +142,16 @@ export default function Report() {
     setCategory({labels:[],datasets:[{ data: [] }]});
     if(data)
     {
+      const summary = data.reduce((acc, item) => {
+        const amount = item?.total_amount ?? 0; // Use `total_amount` if available, fallback to 0
+        acc[item.category] = (acc[item.category] || 0) + amount;
+        return acc;
+      }
+
+      , {});
       const formattedData = {
-        labels: data.map(item => item.category),
-        datasets: [{ data: data.map(item => item?.total_amount?? 0) }]
+        labels: Object.entries(summary).map(([category, total]) => category),
+        datasets: [{ data: Object.entries(summary).map(([category, total]) => total) }]
       };
       setCategory(formattedData);
     }

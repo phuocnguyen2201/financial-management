@@ -13,6 +13,7 @@ import { db } from '../services/firebase_config';
 import uuid from 'react-native-uuid';
 import { Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Scan({ navigation}) {
 
@@ -27,7 +28,7 @@ export default function Scan({ navigation}) {
   const screenWidth = width - 16;
   
   const openCamera = () => {
-    
+
     if(!permission)
       return <View />;
 
@@ -44,7 +45,7 @@ export default function Scan({ navigation}) {
 
   //Generate a unique user id for each devices.
   const verifyUniqueUser = async () => {
-      setId(await getUserID());
+     setId(await getUserID());
   }
 
   const camera = useRef(null);
@@ -126,6 +127,12 @@ export default function Scan({ navigation}) {
       });
     }
   };
+
+  const factoryReset = async () => {
+    
+    const user = await AsyncStorage.removeItem('user');
+    console.log('User: ', user);
+  }
   
   useEffect(() => {
     verifyUniqueUser();
@@ -142,7 +149,15 @@ export default function Scan({ navigation}) {
         <Text style={styles.textmd}>Adjust the document in the frame</Text>
       </View>
       <SafeAreaView style={{flex:4}}>
-        <CameraView flash={flash}  facing='back' style={{ flex: 1, borderRadius:15, margin:5 }} ref={camera} ></CameraView>
+        <CameraView 
+        flash={
+          flash
+        }
+        facing={
+          'back'
+        } 
+        style={{ flex: 1, borderRadius:15, margin:5, width: screenWidth }} 
+        ref={camera} ></CameraView>
       </SafeAreaView>
       
       

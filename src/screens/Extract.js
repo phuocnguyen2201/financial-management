@@ -60,11 +60,11 @@ export default function Extract() {
                   <View>
                     <Table style={styles.table}>
                       <Row data={tableHead} style={styles.head} textStyle={{ textAlign: 'right', margin: 6 }}/>
-                      <Rows data={item.items.map((item, index) => [
+                      { item.items !=null? <Rows data={item.items.map((item, index) => [
                         item.name,
                         item.quantity,
                         item.price
-                      ])} textStyle={{ textAlign: 'right', margin: 6 }}/>
+                      ])} textStyle={{ textAlign: 'right', margin: 6 }}/>: <Text style={styles.text}>No items found</Text>}
                     </Table>
 
                   </View>

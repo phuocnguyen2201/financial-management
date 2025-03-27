@@ -104,8 +104,6 @@ export default function Scan({ navigation}) {
     .finally(() => 
       {
         setLoading(false);
-        setSuccess(false);
-        setFail(false);
       });
   }
 
@@ -121,20 +119,16 @@ export default function Scan({ navigation}) {
         text1: 'Success!',
         text2: 'Operation completed successfully. 🎉',
       });
+      setSuccess(false);
     } else if (fail === true) {
       Toast.show({
         type: 'error',
         text1: 'Error!',
         text2: 'Something went wrong. ❌',
       });
+      setFail(false);
     }
   };
-
-  const factoryReset = async () => {
-    
-    const user = await AsyncStorage.removeItem('user');
-    console.log('User: ', user);
-  }
   
   useEffect(() => {
     verifyUniqueUser();

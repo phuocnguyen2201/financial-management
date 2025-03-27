@@ -4,6 +4,17 @@
 
 Financial Management is a Bill Scanner & Expense Tracker that offers monitoring your spending by scanning receipts and automatically categorizing expenses. 
 
+## Technologies
+
+### Front-end:
+     React Native.
+### ORC Integration: 
+    ORC API from Klippa.
+### Storage: 
+    Firebase, AsyncStorage.
+### Analytics: 
+    React Native Chart Kit, React Native Reanimated Table
+
 ## Installation
 
 Clone the repository:

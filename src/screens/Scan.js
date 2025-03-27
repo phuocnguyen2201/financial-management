@@ -23,20 +23,20 @@ export default function Scan({ navigation}) {
   const [id, setId] = useState('');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(null);
+  const [fail, setFail] = useState(null);
+  const camera = useRef(null);
 
   const width = Dimensions.get('window').width;
   const screenWidth = width - 16;
-  
+
   const openCamera = () => {
 
-    if(!permission)
-      return <View />;
-
-    if(!permission.granted){
+    if (!permission || !permission.granted) {
+      // Camera permissions are still loading or not granted yet.
       return (
         <View style={styles.container}>
           <Text style={styles.message}>We need your permission to show the camera</Text>
-          <Button onPress={requestPermission} title="Grant Permission" />
+          <Button onPress={requestPermission} title="grant permission" />
         </View>
       );
     }
@@ -48,7 +48,7 @@ export default function Scan({ navigation}) {
      setId(await getUserID());
   }
 
-  const camera = useRef(null);
+  
   const takePhoto = async () => {
     setLoading(true);
     if(camera) {
@@ -96,14 +96,16 @@ export default function Scan({ navigation}) {
             setSuccess(true);
         }
     else
-      setSuccess(false);
+      setFail(true);
         
       }
     })
     .catch(error => console.error("Error from the categoryItem function: "+error))
     .finally(() => 
       {
-        setLoading(false)
+        setLoading(false);
+        setSuccess(false);
+        setFail(false);
       });
   }
 
@@ -119,7 +121,7 @@ export default function Scan({ navigation}) {
         text1: 'Success!',
         text2: 'Operation completed successfully. 🎉',
       });
-    } else if (success === false) {
+    } else if (fail === true) {
       Toast.show({
         type: 'error',
         text1: 'Error!',
@@ -143,6 +145,13 @@ export default function Scan({ navigation}) {
     notificationMessage();
   }, [success]);
 
+  //Reason camera is not working on ios is because of the permission cannot be re-check, or it is already in-use of other apps but not yet un-mount.
+  useEffect(() => {
+    if(!permission || !permission.granted)
+      openCamera();
+  }, [permission]);
+
+
   return (
     <View style={{ flex: 1 , backgroundColor: '#fff'}}>
       <View style={styles.titleContainer}>
@@ -153,11 +162,8 @@ export default function Scan({ navigation}) {
         flash={
           flash
         }
-        facing={
-          'back'
-        } 
-        style={{ flex: 1, borderRadius:15, margin:5, width: screenWidth }} 
-        ref={camera} ></CameraView>
+        style={{ flex: 1, borderRadius:15, margin:5, minWidth: screenWidth }} 
+        ref={camera} />
       </SafeAreaView>
       
       

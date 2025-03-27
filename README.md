@@ -14,6 +14,37 @@ Install the npm:
 
     npm install
 
+The app using ORC powered by Klippa:
+
+    https://dochorizon.klippa.com/public/signup
+
+The app using 2 models, you should active both of them:
+
+    Document Capturing - Financial Model for extract all the information in the receipt.
+    Document Capturing - Prompt Builder for categorize the items in the receipt.
+
+Create slug for each of model:
+
+    Financial Model - invoice.
+    
+    Prompt Builder - invoice-category.
+
+For example:
+![Financial model's slug](/assets/financial-model-slug.PNG)
+
+Create API for every services by following the path Project setting > Credentials. Choose the Documont Capturing Financial and Prompt Builder.
+
+Create firebase realtime database.
+
+Create .env file and add.
+
+    EXPO_PUBLIC_OCR_API_URL=https://dochorizon.klippa.com/api/services/document_capturing/v1
+    EXPO_PUBLIC_OCR_API_KEY=[Your OCR api key here]
+
+    EXPO_PUBLIC_DATABSE_URL=[Your firebase url here]
+    EXPO_PUBLIC_DATABASE_API_KEY=[Your firebase key here]
+
+
 Start the server:
 
     npx expo start

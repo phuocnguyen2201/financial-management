@@ -190,7 +190,7 @@ export default function Report() {
     ]
   };
   return (
-    <ScrollView style={{ flex: 1 }}>
+    <ScrollView style={{ flex: 1 , backgroundColor: '#fff'}}>
       { 
         data != null && data && data.length > 0 && Series.some(item => item.value > 0) ?
         <View style={styles.chartContainer}>

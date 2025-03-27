@@ -144,7 +144,7 @@ export default function Scan({ navigation}) {
   }, [success]);
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 , backgroundColor: '#fff'}}>
       <View style={styles.titleContainer}>
         <Text style={styles.textmd}>Adjust the document in the frame</Text>
       </View>

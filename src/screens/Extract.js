@@ -40,7 +40,7 @@ export default function Extract() {
   }, [Id]);
 
   return (
-    <ScrollView>
+    <ScrollView style={{backgroundColor: '#fff'}}>
       {data && data.length > 0 ?  
         
         data.map((item, index) => {
@@ -72,7 +72,7 @@ export default function Extract() {
             </View>
             );
         })
-       : <View style={styles.container}>
+       : <View style={styles.chartContainer}>
           <Pressable style={styles.pressable}>
             <Text style={styles.text}>Wow ~ such empty</Text>
           </Pressable>

@@ -66,6 +66,8 @@ Start the server:
 project-root/
 ├── assets/                         # Contains all images.
 │   └── 
+├── components/                     # Contains all components.
+│   └── LoadingModal.js             # Loading modal.
 ├── src/                            # Contains all source code
 │   ├── screens
 │   |   ├── Extract.js              # Extract screen contains new extracted data 

@@ -2,7 +2,7 @@
 
 ## Overview
 
-Financial Management is a Bill Scanner & Expense Tracker that offers monitoring your spending by scanning receipts and automatically categorizing expenses. 
+**Financial Management** is a **Bill Scanner** & **Expense Tracker** that offers monitoring your spending by scanning receipts and automatically categorizing expenses. 
 
 ## Technologies
 
@@ -43,7 +43,16 @@ Create slug for each of model:
 For example:
 ![Financial model's slug](/assets/financial-model-slug.PNG)
 
-Create API for every services by following the path Project setting > Credentials. Choose the Documont Capturing Financial and Prompt Builder.
+Financial Model slug toggle **Financial**, **Date Details** and **Line Items**:
+
+![Financial model slug's details](/assets/financial.PNG)
+
+Prompt Builder Model slug enter these items and prompt like in the image:
+
+![Prompt builder slug's details](/assets/prompt.PNG)
+
+
+Create API for every services by following the path **Project setting** > **Credentials**. Choose the Documont **Capturing Financial** and **Prompt Builder**.
 
 Create firebase realtime database.
 

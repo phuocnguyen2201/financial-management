@@ -141,8 +141,7 @@ export default function Scan({ navigation}) {
 
   //Reason camera is not working on ios is because of the permission cannot be re-check, or it is already in-use of other apps but not yet un-mount.
   useEffect(() => {
-    if(!permission || !permission.granted)
-      openCamera();
+    openCamera();
   }, [permission]);
 
 

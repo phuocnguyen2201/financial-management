@@ -181,14 +181,7 @@ export default function Report() {
   useEffect(() => {
 
   }, [selectedValue]);
-  const testdata = {
-    labels: ["January", "February", "March", "April", "May", "June"],
-    datasets: [
-      {
-        data: [20, 45, 28, 80, 99, 43]
-      }
-    ]
-  };
+
   return (
     <ScrollView style={{ flex: 1 , backgroundColor: '#fff'}}>
       { 

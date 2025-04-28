@@ -61,7 +61,7 @@ Create .env file and add.
     EXPO_PUBLIC_OCR_API_URL=https://dochorizon.klippa.com/api/services/document_capturing/v1
     EXPO_PUBLIC_OCR_API_KEY=[Your OCR api key here]
 
-    EXPO_PUBLIC_DATABSE_URL=[Your firebase url here]
+    EXPO_PUBLIC_DATABASE_URL=[Your firebase url here]
     EXPO_PUBLIC_DATABASE_API_KEY=[Your firebase key here]
 
 

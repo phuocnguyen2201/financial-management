@@ -8,7 +8,7 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: process.env.EXPO_PUBLIC_DATABASE_API_KEY,
   authDomain: "financial-mgt.firebaseapp.com",
-  databaseURL: process.env.EXPO_PUBLIC_DATABSE_URL,
+  databaseURL: process.env.EXPO_PUBLIC_DATABASE_URL,
   projectId: "financial-mgt",
   storageBucket: "financial-mgt.firebasestorage.app",
   messagingSenderId: "403741153966",

@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { use, useRef, useState, useEffect } from "react";
 import { Button, Text, View, Image, Pressable, Alert } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
@@ -131,7 +130,6 @@ export default function Scan({ navigation}) {
   };
   
   useEffect(() => {
-    verifyUniqueUser();
     openCamera();
   }, []);
 
@@ -143,6 +141,13 @@ export default function Scan({ navigation}) {
   useEffect(() => {
     openCamera();
   }, [permission]);
+
+  useEffect(() => {
+    if (id === '') {
+      verifyUniqueUser();
+    }
+  }
+  , [id]);
 
 
   return (

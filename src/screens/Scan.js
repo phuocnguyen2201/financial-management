@@ -1,7 +1,6 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { use, useRef, useState, useEffect } from "react";
-import { Button, Text, View, Image, Pressable, Alert } from 'react-native';
-import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import { useRef, useState, useEffect } from "react";
+import { Button, Text, View, Pressable, Dimensions } from 'react-native';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import styles from '../styles/Global-Style';
 import { uploadImage, categoryItem} from '../services/connection';
 import { formatDate, getUserID } from '../services/utility';
@@ -11,9 +10,7 @@ import Toast from 'react-native-toast-message';
 import { set, ref } from 'firebase/database';
 import { db } from '../services/firebase_config';
 import uuid from 'react-native-uuid';
-import { Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Scan({ navigation}) {
 
@@ -31,7 +28,7 @@ export default function Scan({ navigation}) {
 
   const openCamera = () => {
 
-    if (!permission || !permission.granted) {
+    if (!permission?.granted) {
       // Camera permissions are still loading or not granted yet.
       return (
         <View style={styles.container}>

@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, ScrollView, Pressable, Dimensions  } from 'react-native';
+import { Text, View, ScrollView, Pressable, Dimensions  } from 'react-native';
 import PieChart from 'react-native-pie-chart'
 import styles from '../styles/Global-Style';
-import { ref, onValue, set } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { db } from '../services/firebase_config';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getUserID, randomColor, fixString, formatDate } from '../services/utility';
 import { BarChart, ContributionGraph } from "react-native-chart-kit";
 import RNPickerSelect from "react-native-picker-select";
@@ -86,7 +86,6 @@ export default function Report() {
   };
 
   const dataByPercentage = () => {
-    let total = 0;
     // Reset the series, prevent duplicate data
     setPercentage([]);
 

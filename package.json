@@ -1,6 +1,6 @@
 {
   "name": "financial-mgt",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "main": "index.js",
   "scripts": {
     "start": "expo start",
@@ -14,12 +14,12 @@
     "@react-navigation/native": "^7.0.15",
     "@rneui/base": "^0.0.0-edge.2",
     "@rneui/themed": "github:react-native-elements/react-native-elements#themed",
-    "expo": "~52.0.39",
+    "expo": "^57.0.19",
     "expo-camera": "~16.0.18",
     "expo-status-bar": "~2.0.1",
     "firebase": "^11.4.0",
     "react": "18.3.1",
-    "react-native": "0.76.7",
+    "react-native": "^0.86.3",
     "react-native-chart-kit": "^6.11.0",
     "react-native-paper": "^5.13.1",
     "react-native-picker-select": "^9.3.1",

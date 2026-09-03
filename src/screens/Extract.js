@@ -45,7 +45,7 @@ export default function Extract() {
         
         data.map((item, index) => {
             return (
-            <View key={`row-${index}`} style={{ marginVertical: 10 }}>
+            <View key={`row-${item.date}-${index}`} style={{ marginVertical: 10 }}>
               <Pressable key={`item-${item.date}-${index}`} style={styles.pressable} onPress={() => handlePress(`row-${index}`)}>
                 <Text style={styles.text}>{item.merchant}</Text>
 

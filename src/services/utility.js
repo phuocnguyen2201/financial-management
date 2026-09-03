@@ -23,13 +23,14 @@ import uuid from 'react-native-uuid';
   const getUserID = async () => {
     try
     {
-      let user = await AsyncStorage?.getItem('user')??null;
+      let user = await AsyncStorage.getItem('user');
+      console.log('User ID: ', user);
       const guidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
       if(user === null || user === undefined || guidRegex.test(user) === false){ 
         //const user = await AsyncStorage.removeItem('user');
         const newUser = await AsyncStorage.setItem('user', uuid.v4());
-        //console.log('New User ID: ', newUser);
+        console.log('New User ID: ', newUser);
         user = newUser;
       }
       return await user;

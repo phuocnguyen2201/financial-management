@@ -128,7 +128,6 @@ export default function Scan({ navigation}) {
   };
   
   useEffect(() => {
-    verifyUniqueUser();
     openCamera();
   }, []);
 
@@ -140,6 +139,13 @@ export default function Scan({ navigation}) {
   useEffect(() => {
     openCamera();
   }, [permission]);
+
+  useEffect(() => {
+    if (id === '') {
+      verifyUniqueUser();
+    }
+  }
+  , [id]);
 
 
   return (
